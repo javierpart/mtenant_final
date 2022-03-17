@@ -20,7 +20,7 @@ entity Employee {
 entity UserTenant{}
 
 relationship OneToOne{
-User to UserTenant
+UserTenant to User
 }
 
 

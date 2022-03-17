@@ -1,0 +1,23 @@
+{
+  "applications": "*",
+  "changelogDate": "20220316165549",
+  "dto": "mapstruct",
+  "embedded": false,
+  "entityTableName": "user_tenant",
+  "fields": [],
+  "fluentMethods": true,
+  "jpaMetamodelFiltering": false,
+  "name": "UserTenant",
+  "pagination": "no",
+  "readOnly": false,
+  "relationships": [
+    {
+      "otherEntityName": "user",
+      "otherEntityRelationshipName": "userTenant",
+      "ownerSide": true,
+      "relationshipName": "user",
+      "relationshipType": "one-to-one"
+    }
+  ],
+  "service": "serviceImpl"
+}

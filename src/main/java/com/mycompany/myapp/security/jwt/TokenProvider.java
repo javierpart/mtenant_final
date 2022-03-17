@@ -1,6 +1,8 @@
 package com.mycompany.myapp.security.jwt;
 
 import com.mycompany.myapp.management.SecurityMetersService;
+import com.mycompany.myapp.repository.UserRepository;
+import com.mycompany.myapp.service.impl.UserTenantServiceImpl;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
@@ -11,6 +13,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -39,6 +42,12 @@ public class TokenProvider {
 
     private final SecurityMetersService securityMetersService;
 
+    @Autowired
+    private UserTenantServiceImpl userTenantServiceImpl;
+
+    @Autowired
+    private UserRepository userRepository;
+
     public TokenProvider(JHipsterProperties jHipsterProperties, SecurityMetersService securityMetersService) {
         byte[] keyBytes;
         String secret = jHipsterProperties.getSecurity().getAuthentication().getJwt().getBase64Secret();
@@ -64,7 +73,9 @@ public class TokenProvider {
 
     public String createToken(Authentication authentication, boolean rememberMe) {
         String authorities = authentication.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.joining(","));
-
+        String tenantId;
+        Optional<com.mycompany.myapp.domain.User> user = userRepository.findOneByLogin(authentication.getName());
+        tenantId = userTenantServiceImpl.getTenantIdByUser(user);
         long now = (new Date()).getTime();
         Date validity;
         if (rememberMe) {
@@ -77,6 +88,7 @@ public class TokenProvider {
             .builder()
             .setSubject(authentication.getName())
             .claim(AUTHORITIES_KEY, authorities)
+            .claim("X-TENANT-ID", tenantId)
             .signWith(key, SignatureAlgorithm.HS512)
             .setExpiration(validity)
             .compact();

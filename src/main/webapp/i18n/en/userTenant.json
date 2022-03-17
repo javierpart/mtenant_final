@@ -1,0 +1,24 @@
+{
+  "jhipsterApp": {
+    "userTenant": {
+      "home": {
+        "title": "User Tenants",
+        "refreshListLabel": "Refresh list",
+        "createLabel": "Create a new User Tenant",
+        "createOrEditLabel": "Create or edit a User Tenant",
+        "notFound": "No User Tenants found"
+      },
+      "created": "A new User Tenant is created with identifier {{ param }}",
+      "updated": "A User Tenant is updated with identifier {{ param }}",
+      "deleted": "A User Tenant is deleted with identifier {{ param }}",
+      "delete": {
+        "question": "Are you sure you want to delete User Tenant {{ id }}?"
+      },
+      "detail": {
+        "title": "User Tenant"
+      },
+      "id": "ID",
+      "user": "User"
+    }
+  }
+}

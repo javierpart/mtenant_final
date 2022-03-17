@@ -1,0 +1,48 @@
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.6.xsd">
+    <!--
+        Added the constraints for entity Employee.
+    -->
+    <changeSet id="add-tenant-id-to-employee-table" author="javierpartida">
+        <addColumn tableName="employee">
+            <column name="tenant_id" type="VARCHAR(30)" defaultValue="0">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+    <changeSet id="employee_row_level_security" author="javierpartida">
+        <sql dbms="postgresql" splitStatements="true">
+            ALTER TABLE employee ENABLE ROW LEVEL SECURITY;
+            DROP POLICY IF EXISTS employee_tenant_isolation_policy ON employee;
+            CREATE POLICY employee_tenant_isolation_policy ON employee
+            USING (tenant_id = current_setting('app.tenant_id')::VARCHAR);
+        </sql>
+    </changeSet>
+    <changeSet id="add-tenant-id-to-company-table" author="javierpartida">
+        <addColumn tableName="company">
+            <column name="tenant_id" type="VARCHAR(30)" defaultValue="0">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+    <changeSet id="company_row_level_security" author="javierpartida">
+        <sql dbms="postgresql" splitStatements="true">
+            ALTER TABLE company ENABLE ROW LEVEL SECURITY;
+            DROP POLICY IF EXISTS company_tenant_isolation_policy ON company;
+            CREATE POLICY company_tenant_isolation_policy ON company
+            USING (tenant_id = current_setting('app.tenant_id')::VARCHAR);
+        </sql>
+    </changeSet>
+
+    <changeSet id="add-tenant-id-to-usertenant-table" author="javierpartida">
+        <addColumn tableName="user_tenant">
+            <column name="tenant_id" type="VARCHAR(30)" defaultValue="0">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
+
+</databaseChangeLog>
